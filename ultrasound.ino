@@ -1,53 +1,66 @@
-int pingPin = 9;
-int echoPin = 10;
-int outLED = 7;
+int trigPin = 9;
 
-float threshld = 10.01;
-int delayedBy = 100;
+int echoPin = 10;
+
+int led = 7;
+
+ 
+
+ 
 
 void setup() {
+
   Serial.begin(9600); 
-  pinMode(outLED, OUTPUT);
-  pinMode(pingPin, OUTPUT);
-  pinMode(echoPin, INPUT); 
+
+   pinMode(led, OUTPUT);
+
+   pinMode(trigPin, OUTPUT);
+
+  pinMode(echoPin, INPUT);
+
+  // put your setup code here, to run once:
+
+ 
+
 }
 
  
 
 void loop() {
-  if(detected(threshld)){
-    outPut(outLED, 1);
-  }
-  else{
-    outPut(outLED, 0);
-  }
-  delay(delayedBy);
+
+  long duration, distance;
+
+  digitalWrite(trigPin,HIGH);
+
+  delayMicroseconds(1000);
+
+  digitalWrite(trigPin, LOW);
+
+  duration=pulseIn(echoPin, HIGH);
+
+  distance =(duration/2)/29.1;
+
+  Serial.print(distance);
+
+  Serial.println("CM");
+
+  delay(10);
+
+if((distance<=10)) 
+
+  {
+
+    digitalWrite(led, HIGH);
+
 }
 
-void outPut(int pin, int value){
-  digitalWrite(pin, value);
-}
-  
-int detected(float threshold){
- long duration, cm;
- pinMode(pingPin, OUTPUT);
- digitalWrite(pingPin, LOW);
- delayMicroseconds(2);
- digitalWrite(pingPin, HIGH);
- delayMicroseconds(10);
- digitalWrite(pingPin, LOW);
- pinMode(echoPin, INPUT);
- duration = pulseIn(echoPin, HIGH);
- cm = microsecondsToCentimeters(duration);
- Serial.print(cm);
- Serial.print("cm");
- Serial.println();
- if(cm <= threshold){
-   return 1;
- }
- return 0;
+   else if(distance>10)
+
+{
+
+     digitalWrite(led, LOW);
+
+   }
+
 }
 
-long microsecondsToCentimeters(long microseconds) {
-   return microseconds / 29 / 2;
-}
